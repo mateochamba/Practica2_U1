@@ -10,17 +10,21 @@ public class Casa {
     private String direccion;
     private String area;
     private String tipoCasa;
+    private boolean vendida;
 
     public Casa() {
     }
 
-    public Casa(Integer id, String dimensiones, String direccion, String area, String tipoCasa) {
+    public Casa(Integer id, String dimensiones, String direccion, String area, String tipoCasa, boolean vendida) {
         this.id = id;
         this.dimensiones = dimensiones;
         this.direccion = direccion;
         this.area = area;
         this.tipoCasa = tipoCasa;
+        this.vendida = vendida;
     }
+
+   
 
    
 
@@ -92,6 +96,20 @@ public class Casa {
      */
     public void setTipoCasa(String tipoCasa) {
         this.tipoCasa = tipoCasa;
+    }
+
+    /**
+     * @return the vendida
+     */
+    public boolean isVendida() {
+        return vendida;
+    }
+
+    /**
+     * @param vendida the vendida to set
+     */
+    public void setVendida(boolean vendida) {
+        this.vendida = vendida;
     }
     
     

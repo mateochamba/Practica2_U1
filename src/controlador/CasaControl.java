@@ -64,4 +64,19 @@ public class CasaControl extends DaoImplement<Casa> {
     public void modificar(Integer index) throws Exception {
         this.merge(casa, index);
     }
+
+    // Cree este metodo para poder verficar el estado de la casa
+    public void modificarEstadoCasa(String direccion, boolean vendida) {
+        for (int i = 0; i < getCasaList().getLength(); i++) {
+            try {
+                Casa casa = getCasaList().getInfo(i);
+                if (casa.getDireccion().equals(direccion));
+                casa.setVendida(vendida);
+                modificar(i);
+                break;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

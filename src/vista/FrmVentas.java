@@ -2,11 +2,9 @@ package vista;
 
 import controlador.CasaControl;
 import controlador.VendedorControl;
-import java.util.Date;
+import controlador.ed.listas.DynamicList;
 import javax.swing.JOptionPane;
 import modelo.Casa;
-import modelo.Vendedor;
-import modelo.Venta;
 import vista.modelo.ModeloTablaCasa;
 import vista.modelo.ModeloTablaVendedorr;
 
@@ -23,7 +21,7 @@ public class FrmVentas extends javax.swing.JDialog {
     private Integer fila = -1;
 
     /**
-     * Creates new form FrmVentas 
+     * Creates new form FrmVentas
      */
     public FrmVentas(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -70,27 +68,62 @@ public class FrmVentas extends javax.swing.JDialog {
                 && !txtDireccion.getText().trim().isEmpty()
                 && !cbxTipoCasa.getSelectedItem().toString().isEmpty());
     }
-    
-    private void adjudicarVenta(){
-        int filaVendedor = tblTableV.getSelectedRow();
-        int filacasa = tblTableC.getSelectedRow();
-        
-        if (filaVendedor == -1|| filacasa == -1){
-            txtNotificacion.setText("Selcciona un Vendedor y una Casa, para poder adjudicar una venta");
-            return; 
-            
-        }
-        
-        String nombreVendedor = (String) tblTableV.getValueAt(filaVendedor, 0);
-        String apellidoVendedor =(String) tblTableV.getValueAt(filaVendedor, 1);
-        String dimensionCasa = (String) tblTableC.getValueAt(filacasa, 1);
-        String direccionCasa= (String) tblTableC.getValueAt(filacasa, 2);
 
-        // Mostrar la notificación en el cuadro de texto
-        String notificacion = "El vendedor " + nombreVendedor + apellidoVendedor + " ha vendido la propiedad en " + direccionCasa + "con una dimension de " + dimensionCasa;
-        txtNotificacion.setText(notificacion);
-        
-        
+    private void adjudicarVenta() {
+        int filaVendedor = tblTableV.getSelectedRow();
+        int filaCasa = tblTableC.getSelectedRow();
+
+        if (filaVendedor == -1 || filaCasa == -1) {
+            txtNotificacion.setText("Selecciona un Vendedor y una Casa para poder adjudicar una venta.");
+            return;
+        }
+
+        try {
+            String nombreVendedor = (String) tblTableV.getValueAt(filaVendedor, 0);
+            String apellidoVendedor = (String) tblTableV.getValueAt(filaVendedor, 1);
+            int dimensionCasa = Integer.parseInt((String) tblTableC.getValueAt(filaCasa, 1));
+            String direccionCasa = (String) tblTableC.getValueAt(filaCasa, 2);
+
+            //Aqui verifico si la casa ya ha sido vendido
+            if (casaVendida(direccionCasa)) {
+                txtNotificacion.setText("Error: La casa en " + direccionCasa + "ya ha sido vendida");
+                return;
+            }
+
+            CasaControl casaControl = new CasaControl();
+            casaControl.modificarEstadoCasa(direccionCasa, true);
+
+            // Usar StringBuilder para mejorar la concatenación
+            StringBuilder notificacion = new StringBuilder();
+            notificacion.append("El vendedor ").append(nombreVendedor).append(" ").append(apellidoVendedor)
+                    .append(" ha vendido la propiedad en ").append(direccionCasa).append(" con una dimensión de ")
+                    .append(dimensionCasa).append(".");
+
+            // Mostrar la notificación en el cuadro de texto
+            txtNotificacion.setText(notificacion.toString());
+
+        } catch (NumberFormatException e) {
+            txtNotificacion.setText("Error: La dimensión de la casa no es un número válido.");
+        }
+    }
+
+    private boolean casaVendida(String direccionCasa) {
+        CasaControl casaControl = new CasaControl();
+        DynamicList<Casa> listaCasa = casaControl.getCasaList();
+
+        for (int i = 0; i < listaCasa.getLength(); i++) {
+            try {
+                Casa casa = listaCasa.getInfo(i);
+
+                if (casa.getDireccion().equals(direccionCasa) && casa.isVendida()) {
+                    // devuelve una casa ya vendida
+                    return true;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 
     private void modificarVendedor() {
@@ -107,7 +140,6 @@ public class FrmVentas extends javax.swing.JDialog {
                 txtTelefono.setText(vc.getVendedor().getTelf());
                 txtDni.setText(vc.getVendedor().getDni());
 
-                //actualizarModeloTablaVendedor();
             } catch (Exception e) {
                 System.out.println("ERROR EN MODIFICAR FRM: " + e);
             }
@@ -115,6 +147,7 @@ public class FrmVentas extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(null, "Seleccione una fila para modificar");
         }
     }
+
 
     private void modificarCasa() {
         fila = tblTableC.getSelectedRow();
@@ -139,13 +172,9 @@ public class FrmVentas extends javax.swing.JDialog {
         }
     }
 
-    
-    
-
     private void guardar() {
         if (validar()) {
             try {
-
                 vc.getVendedor().setNombre(txtNombre.getText());
                 vc.getVendedor().setApellido(txtApellido.getText());
                 vc.getVendedor().setCorreo(txtCorreo.getText());
@@ -153,8 +182,10 @@ public class FrmVentas extends javax.swing.JDialog {
                 vc.getVendedor().setDni(txtDni.getText());
 
                 if (vc.getVendedor().getId() != null) {
+                    // Si el ID del vendedor ya existe, se está modificando
                     vc.modificar(fila);
                 } else {
+                    // Si el ID del vendedor es nulo, se está creando uno nuevo
                     vc.persit();
                 }
 
@@ -169,12 +200,10 @@ public class FrmVentas extends javax.swing.JDialog {
 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "NO SE PUDO GUARDAR: " + e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
-
             }
         }
-
     }
-
+//    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
