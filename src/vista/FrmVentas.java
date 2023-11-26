@@ -85,19 +85,13 @@ public class FrmVentas extends javax.swing.JDialog {
             int dimensionCasa = Integer.parseInt((String) tblTableC.getValueAt(filaCasa, 1));
             String direccionCasa = (String) tblTableC.getValueAt(filaCasa, 2);
 
-            //Aqui verifico si la casa ya ha sido vendido
-            if (casaVendida(direccionCasa)) {
-                txtNotificacion.setText("Error: La casa en " + direccionCasa + "ya ha sido vendida");
-                return;
-            }
-
-            CasaControl casaControl = new CasaControl();
-            casaControl.modificarEstadoCasa(direccionCasa, true);
+            // Aquí utilizamos la misma instancia de CasaControl creada anteriormente en la clase.
+            cc.modificarEstadoCasa(direccionCasa, true);
 
             // Usar StringBuilder para mejorar la concatenación
             StringBuilder notificacion = new StringBuilder();
             notificacion.append("El vendedor ").append(nombreVendedor).append(" ").append(apellidoVendedor)
-                    .append(" ha vendido la propiedad en ").append(direccionCasa).append(" con una dimensión de ")
+                    .append(" ha vendido la propiedad en ").append(direccionCasa).append(" con una area de ")
                     .append(dimensionCasa).append(".");
 
             // Mostrar la notificación en el cuadro de texto
@@ -107,6 +101,7 @@ public class FrmVentas extends javax.swing.JDialog {
             txtNotificacion.setText("Error: La dimensión de la casa no es un número válido.");
         }
     }
+
 
     private boolean casaVendida(String direccionCasa) {
         CasaControl casaControl = new CasaControl();
@@ -128,12 +123,16 @@ public class FrmVentas extends javax.swing.JDialog {
     }
 
     private void modificarVendedor() {
+        // Obtiene el índice de la fila seleccionada en la tabla.
+
         fila = tblTableV.getSelectedRow();
+        // Verifica si se ha seleccionado una fila válida.
 
         if (fila >= 0) {
             try {
                 Integer id = mv.getLista().getInfo(fila).getId();
                 vc.setVendedor(vc.get(id));
+                // Muestra la información del vendedor en los campos de texto correspondientes en la interfaz de usuario.
 
                 txtNombre.setText(vc.getVendedor().getNombre());
                 txtApellido.setText(vc.getVendedor().getApellido());
@@ -194,8 +193,7 @@ public class FrmVentas extends javax.swing.JDialog {
                 cc.getCasa().setTipoCasa(cbxTipoCasa.getSelectedItem().toString());
 
                 cc.persit();
-                
-                
+
                 limpiar();
 
             } catch (Exception e) {
