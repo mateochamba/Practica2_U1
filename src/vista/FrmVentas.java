@@ -5,6 +5,7 @@ import controlador.VendedorControl;
 import controlador.ed.listas.DynamicList;
 import javax.swing.JOptionPane;
 import modelo.Casa;
+import modelo.Vendedor;
 import vista.modelo.ModeloTablaCasa;
 import vista.modelo.ModeloTablaVendedorr;
 
@@ -148,7 +149,6 @@ public class FrmVentas extends javax.swing.JDialog {
         }
     }
 
-
     private void modificarCasa() {
         fila = tblTableC.getSelectedRow();
 
@@ -165,10 +165,11 @@ public class FrmVentas extends javax.swing.JDialog {
 
                 // ... (otros campos según sea necesario)
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println("ERROR EN MODIFICAR FRM: " + e);
+
             }
         } else {
-            System.out.println("No hay fila seleccionada");
+            JOptionPane.showMessageDialog(null, "Seleccione una fila para modificar");
         }
     }
 
@@ -182,10 +183,8 @@ public class FrmVentas extends javax.swing.JDialog {
                 vc.getVendedor().setDni(txtDni.getText());
 
                 if (vc.getVendedor().getId() != null) {
-                    // Si el ID del vendedor ya existe, se está modificando
                     vc.modificar(fila);
                 } else {
-                    // Si el ID del vendedor es nulo, se está creando uno nuevo
                     vc.persit();
                 }
 
@@ -195,7 +194,8 @@ public class FrmVentas extends javax.swing.JDialog {
                 cc.getCasa().setTipoCasa(cbxTipoCasa.getSelectedItem().toString());
 
                 cc.persit();
-
+                
+                
                 limpiar();
 
             } catch (Exception e) {
@@ -203,7 +203,7 @@ public class FrmVentas extends javax.swing.JDialog {
             }
         }
     }
-//    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -484,7 +484,7 @@ public class FrmVentas extends javax.swing.JDialog {
             }
         });
 
-        txtNotificacion.setFont(new java.awt.Font("Evogria", 0, 14)); // NOI18N
+        txtNotificacion.setFont(new java.awt.Font("Evogria", 0, 10)); // NOI18N
         txtNotificacion.setForeground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -504,7 +504,6 @@ public class FrmVentas extends javax.swing.JDialog {
                                 .addComponent(btnGuardar1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(29, 29, 29)
                                 .addComponent(btnModificarVendedor)))))
-                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)

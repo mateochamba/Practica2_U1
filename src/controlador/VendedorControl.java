@@ -25,15 +25,21 @@ public class VendedorControl extends DaoImplement<Vendedor> {
     }
 
     public Boolean persit() {
-        vendedor.setId(all().getLength() + 1);
-        return persit(vendedor);
+        if (vendedor != null) {
+            vendedor.setId(all().getLength() + 1);
+            return persit(vendedor);
+        }
+        return false;
+//        vendedor.setId(all().getLength() + 1);
+//        return persit(vendedor);
     }
-    
 
     public void modificar(Integer index) throws Exception {
-        this.merge(vendedor, index);
+        if (vendedor != null) {
+            this.merge(vendedor, index);
+        }
+        //this.merge(vendedor, index);
     }
-
 
     public void imprimir() {
         System.out.println("Vendedor Registrado");

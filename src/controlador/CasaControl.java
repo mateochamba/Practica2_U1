@@ -37,8 +37,13 @@ public class CasaControl extends DaoImplement<Casa> {
     }
 
     public Boolean persit() {
-        casa.setId(all().getLength() + 1);
-        return persit(casa);
+        if(casa != null){
+            casa.setId(all().getLength() + 1);
+            return persit(casa);
+        }
+        return false;
+//        casa.setId(all().getLength() + 1);
+//        return persit(casa);
     }
 
     public Casa getCasa() {
@@ -62,7 +67,10 @@ public class CasaControl extends DaoImplement<Casa> {
     }
 
     public void modificar(Integer index) throws Exception {
-        this.merge(casa, index);
+        if(casa != null){
+          this.merge(casa, index);  
+        }
+        //this.merge(casa, index);
     }
 
     // Cree este metodo para poder verficar el estado de la casa
